@@ -113,7 +113,7 @@
     <section anchor="usage">
       <name>Use of the IPv6 Flow Label</name>
       <t>
-          The format of the IPv6 packet header is described in Section 3 of RFC 8200, and includes the 20 bit IPv6 Flow Label field.
+          The format of the IPv6 packet header is described in <xref target="RFC8200" sectionFormat="of" section="3"/>, and includes the 20 bit IPv6 Flow Label field.
       </t>
 
           <section anchor="spec">
@@ -148,14 +148,14 @@
                 Part of the reason for documenting this use of the IPv6 Flow Label was to note that, at least in the domain of certain HEP research networks, the IPv6 Flow Label is not being used exactly as specified, and to record the reason why.
             </t>
             <t>
-                RFC 8200 states that “the 20-bit Flow Label field in the IPv6 header is used by a source to label sequences of packets to be treated in the network as a single flow”.
+                <xref target="RFC8200" sectionFormat="of" section="6"/> states that “the 20-bit Flow Label field in the IPv6 header is used by a source to label sequences of packets to be treated in the network as a single flow”.
             </t>
           <t>
             <t>
-                RFC 6437 states that “It is therefore RECOMMENDED that source hosts support the flow label by setting the flow label field for all packets of a given flow to the same value chosen from an approximation to a discrete uniform distribution“ and that the algorithm (for setting the Flow Label value) “SHOULD ensure that the resulting flow label values are unique with high probability.”
+                <xref target="RFC6437" sectionFormat="of" section="3"/> states that “It is therefore RECOMMENDED that source hosts support the flow label by setting the flow label field for all packets of a given flow to the same value chosen from an approximation to a discrete uniform distribution“ and that the algorithm (for setting the Flow Label value) “SHOULD ensure that the resulting flow label values are unique with high probability.” 
             </t>
             <t>
-                RFC 6437 further adds that “a specific goal is to enable and encourage the use of the flow label for various forms of stateless load distribution, especially across Equal Cost Multi-Path (ECMP) and/or Link Aggregation Group (LAG) paths.”
+                <xref target="RFC6437" sectionFormat="of" section="1"/> further adds that “a specific goal is to enable and encourage the use of the flow label for various forms of stateless load distribution, especially across Equal Cost Multi-Path (ECMP) and/or Link Aggregation Group (LAG) paths.”
             </t>
             <t>
                   In this packet marking scheme, all traffic belonging to the same experiment and application, e.g., "ALICE" and "XRootD", will carry a flow label with 15 fixed, common bits and 5 varying (entropy) bits.  Given use of the Flow label as described above should use 20 entropy bits (with a uniform distribution), it is not the case here that the flow label values will be unique with such a high probability, i.e., 1 in 32 network flows will in principle be unique rather than around 1 in a million.
@@ -168,10 +168,10 @@
         <section anchor="collection">
             <name>Traffic inspection and collection on path</name>
             <t>
-                As packets are marked using the IPv6 flow label, it is possible for intermediate routers to sample traffic in the forwarding hardware and send this data off to central collectors for analysis.  In many network environments, the standard approach is for a hardware-specific implementation on a router to sample the traffic and use the IPFIX protocol (rfc7011) to send the sampled data to a collector.  RFC 5102 section 5.4.21 defines field #31 for carrying the IPv6 Flow Label information, and major router hardware and collector software implementations are known to support this.
+                As packets are marked using the IPv6 flow label, it is possible for intermediate routers to sample traffic in the forwarding hardware and send this data off to central collectors for analysis.  In many network environments, the standard approach is for a hardware-specific implementation on a router to sample the traffic and use the IPFIX protocol <xref target="RFC7011"/> to send the sampled data to a collector.  <xref target="RFC5102" sectionFormat="of" section="5.4.21"/> defines field #31 for carrying the IPv6 Flow Label information, and major router hardware and collector software implementations are known to support this.
             </t>
             <t>
-                Some hardware platforms, primarily with a lineage more firmly rooted in switching vs routing, support traffic sampling via sflow (RFC 3176).  Unlike IPFIX, the traffic is not summarized by the router/switch, but a significant part of the sampled raw packet is encapsulated and sent to the collector for analysis. sFlow datagrams include one or more packet flow records which in turn include the original datagram header. Individual fields such as the IPv6 flow label are able to be collected.
+                Some hardware platforms, primarily with a lineage more firmly rooted in switching vs routing, support traffic sampling via sflow <xref target="RFC3176"/>.  Unlike IPFIX, the traffic is not summarized by the router/switch, but a significant part of the sampled raw packet is encapsulated and sent to the collector for analysis. sFlow datagrams include one or more packet flow records which in turn include the original datagram header. Individual fields such as the IPv6 flow label are able to be collected.
             </t>
             <t>
                 Traffic mirroring and/or optical taps can also be used to copy raw traffic to a server for analysis.  The data rates, number of links, and power availability to run servers for large scale collection may make traditional packet capture and analysis impractical in many environments such as REN (Research and Education Network) environments, though there has been initial success with the P4 implementation running on the FPGA platform deployed throughout ESnet.  
@@ -181,7 +181,7 @@
         <section anchor="implications">
             <name>Implications for traffic analysis</name>
             <t>
-                Corresponding to the expectations in section 4 of [RFC6436], a brief, unscientific sampling of non-MPLS encapsulated traffic collected via IPFIX on ESnet5 does show that there is a mix of [RFC3697] compliant hosts where all-zero flow labels are used, as well as updated [RFC6437] compliant hosts that by default choose uniformly distributed labels between 1 and 0xFFFFF.  A traffic analysis system may need to know which specific endpoints are using the packet marking meaning of the flow label and that the field's values are relevant.  As the deployments for are for rather narrow accounting use cases within specific user communities, it has been practical to match for known flow labels vs trying to keep the accounting state for 2^20 possible labels in use for each link of the network.  
+                Corresponding to the expectations in <xref target="RFC6436" sectionFormat="of" section="4"/>, a brief, unscientific sampling of non-MPLS encapsulated traffic collected via IPFIX on ESnet5 does show that there is a mix of <xref target="RFC3697"/> compliant hosts where all-zero flow labels are used, as well as updated <xref target="RFC6437"/> compliant hosts that by default choose uniformly distributed labels between 1 and 0xFFFFF.  A traffic analysis system may need to know which specific endpoints are using the packet marking meaning of the flow label and that the field's values are relevant.  As the deployments for are for rather narrow accounting use cases within specific user communities, it has been practical to match for known flow labels vs trying to keep the accounting state for 2^20 possible labels in use for each link of the network.  
             </t>
         </section> <!-- end of implications -->
 
@@ -200,7 +200,7 @@
             <name>Additional Considerations</name>
             <t>
                 <!-- TODO -->
-                If there are concerns about preserving entropy and reducing the possible collisions with the standard use of the IPv6 Flow Label, we could use the "entropy" bits defined above to instead calculate a Hamming Code.  A Hamming Code calculates a set of Parity Bits to be used to extend a set of Message(Data) Bits, that will maximize the number of bits that are different between "valid" messages.  This may better support existing use of the flow label for ECMP as described in RFC 6437.
+                If there are concerns about preserving entropy and reducing the possible collisions with the standard use of the IPv6 Flow Label, we could use the "entropy" bits defined above to instead calculate a Hamming Code.  A Hamming Code calculates a set of Parity Bits to be used to extend a set of Message(Data) Bits, that will maximize the number of bits that are different between "valid" messages.  This may better support existing use of the flow label for ECMP as described in <xref target="RFC6437"/>.
             </t>
                 <!-- TODO add something on whether or not the label should be used for forwarding -->
         </section> <!-- end of considerations -->
@@ -213,7 +213,7 @@
         <section anchor="options">
             <name>IPv6 Hop-by-Hop or Destination Options</name>
             <t>
-                Extension headers are known to be problematic in that they have a history of being filtered or dropped in transit, as measured in rfc7872. It MIGHT be that such issues are less common in Research and Education networks.  As an example, RFC 9343 defines an alternate marking encoding for use in either hop-by-hop or destination options headers.  RFC 7837 defines a marking in support of congestion control (ConEx), and RFC 8250 a Standards Track document that defines a destination option for Performance and Diagnostic Metrics (PDM) for IPv6.   There is also this draft defining an option - https://datatracker.ietf.org/doc/draft-ietf-ippm-ioam-ipv6-options/, for the use case of carrying OAM information.
+                Extension headers are known to be problematic in that they have a history of being filtered or dropped in transit, as measured in <xref target="RFC7872"/>. It MIGHT be that such issues are less common in Research and Education networks.  As an example, <xref target="RFC9343"/> defines an alternate marking encoding for use in either hop-by-hop or destination options headers.  <xref target="RFC7837"/> defines a marking in support of congestion control (ConEx), and <xref target="RFC8250"/> is a Standards Track document that defines a destination option for Performance and Diagnostic Metrics (PDM) for IPv6.   There is also this draft defining an option <xref target="I-D.ietf-ippm-ioam-ipv6-options"/>, for the use case of carrying OAM information.
             </t>
             <t>
                 <!-- TODO -->
@@ -223,14 +223,14 @@
                 The Destination option header could therefore be a logical choice to place application-specific telemetry identifiers, as there is less of a constraint on space than the IPv6 Flow Label, less history of defined pre-existing intentions from the standards body, and low deployed usage on the Internet.   However, at present, the linux implementation in particular requires either setuid 0 or CAP_NET_RAW capability to be able to call setsockopt(s, IPPROTO_IPV6, IPV6_DSTOPTS, ext_hdr_p, ext_hdr_size, making it unusable by typical userspace applications.  There has been a set of patches made that could address this as well as extend the functionality, though they have not been met with support from the linux network maintainers.  Additionally, extracting that field by intermediate routers and exporting it via IPFIX may be further subject to lack of support compared to the fixed field and known position of the flow label.
             </t>
             <t>
-                While in principle it’s possible, it is less practical to use a Hop-by-Hop option, for the reasons discussed in draft-krishnan-ipv6-hopbyhop-05.  However, there is a recent example of its use in RFC9268 where a host can signal this option, routers will not process it unless configured to do so, and if not, they may well drop the packet according to https://datatracker.ietf.org/doc/html/rfc8200#section-4.8.
+                    While in principle it’s possible, it is less practical to use a Hop-by-Hop option, for the reasons discussed in <xref target="I-D.krishnan-ipv6-hopbyhop"/>.  However, there is a recent example of its use in <xref target="RFC9268"/> where a host can signal this option, routers will not process it unless configured to do so, and if not, they may well drop the packet according to <xref target="RFC8200" sectionFormat="of" section="4.8"/>.
             </t>
         </section> <!-- end of options -->
 
         <section anchor="addresses">
             <name>IPv6 Addresses as identifiers</name>
             <t>
-                Given the size of IPv6 addresses, it is possible to mark or “color” packets by using specific site network prefixes (within a site /64) or values in (a part of) the host identifier part of an  address (typically 64 bits). Hosts already currently use multiple IPv6 source addresses.  Applications would need to bind sockets to the correct source address, per flow, corresponding to the accounting details to be conveyed.  Dispatching computation jobs into a high-throughput computational cluster along with network-specific metadata has for example been explored in https://doi.org/10.1016/j.future.2016.03.010.
+                Given the size of IPv6 addresses, it is possible to mark or “color” packets by using specific site network prefixes (within a site /64) or values in (a part of) the host identifier part of an  address (typically 64 bits). Hosts already currently use multiple IPv6 source addresses.  Applications would need to bind sockets to the correct source address, per flow, corresponding to the accounting details to be conveyed.  Dispatching computation jobs into a high-throughput computational cluster along with network-specific metadata has for example been explored in <xref target="Lark"/>.
             </t>
             <t>
                 Hosts serving different users/applications would need multiple addresses, one for each possible, configured in advance of the application requiring it.   Adding an IP address onto a host requires root level access to a system and is typically not available as a dynamic function available for userspace.  There also may be limits on the number of source addresses able to be concurrently configured, so a garbage collection process may need to deprovision addresses no longer in use.  This dynamic use of source addresses also may cause operational issues around access-control list management, and security implementations at a site.
@@ -250,10 +250,10 @@
         <section anchor="tokens">
             <name>Network Tokens</name>
             <t>
-                A recently published IETF personal draft documents the concept of “Network Tokens”, see https://tools.ietf.org/html/draft-yiakoumis-network-tokens-01.
+                A recently published IETF personal draft documents the concept of “Network Tokens”, see <xref target="I-D.yiakoumis-network-tokens"/>.
             </t>
             <t>
-                “A network token is a small piece of data that end users attach to their packets.  As packets flow through the network, intermediate nodes MAY detect tokens, interpret them, and apply the desired service to the packets that carry them (and possibly to all other packets from the same flow).  For example, a token might just state the name of the application that a packet originates from.“  The draft proposes a 28-bit token ID field.  It discusses multiple mechanisms for tokens to be conveyed; some may be applicable to IPv4.  https://www.ietf.org/id/draft-iab-path-signals-collaboration-03.txt puts this work into a broader context.
+                “A network token is a small piece of data that end users attach to their packets.  As packets flow through the network, intermediate nodes MAY detect tokens, interpret them, and apply the desired service to the packets that carry them (and possibly to all other packets from the same flow).  For example, a token might just state the name of the application that a packet originates from.“  The draft proposes a 28-bit token ID field.  It discusses multiple mechanisms for tokens to be conveyed; some may be applicable to IPv4.  <xref target="I-D.iab-path-signals-collaboration"/> puts this work into a broader context.
             </t>
         </section> <!-- end of tokens -->
 
@@ -263,13 +263,13 @@
                 While this document is targeted at the IPv6 Operations WG and describes an approach used to mark IPv6 traffic, the reality is that some HEP and WLCG traffic is IPv4, and thus there is interest, in the short term at least, in marking IPv4 traffic.
             </t>
             <t>
-                IPv4 does not have a dedicated flow label, but provides a way to extend headers by means of header options. An overview of the IPv4 RFCs related to the header options can be found at: https://www.iana.org/assignments/ip-parameters/ip-parameters.xhtml.  The IPv4 option method is likely to effectively be unusable because unknown options lead to packet drops on many paths (due to firewalls, etc).  There is an IETF draft that attempts to add IPv6 flow labels to IPv4 via options at  https://tools.ietf.org/html/draft-herbert-ipv4-eh-01, however there appears to be no existing implementation readily available.
+                IPv4 does not have a dedicated flow label, but provides a way to extend headers by means of header options. An overview of the IPv4 RFCs related to the header options can be found at: <xref target="IPv4-parameters"/>.  The IPv4 option method is likely to effectively be unusable because unknown options lead to packet drops on many paths (due to firewalls, etc).  There is an IETF draft that attempts to add IPv6 flow labels to IPv4 via options at <xref target="I-D.herbert-ipv4-eh"/>, however there appears to be no existing implementation readily available.
             </t>
             <t>
-                IPv4 header options can be set via setsockopt as well, however the actual application support for different standards is more complex. As an example, while there are many existing IPv4 header options, only some of them are implemented in the Linux kernel. The Stream Identifier Option, value would appear to align with our use of the ipv6 flow label, but its usage was obsoleted in https://tools.ietf.org/html/rfc1122 section 3.2.1.8.  
+                IPv4 header options can be set via setsockopt as well, however the actual application support for different standards is more complex. As an example, while there are many existing IPv4 header options, only some of them are implemented in the Linux kernel. The Stream Identifier Option, value would appear to align with our use of the ipv6 flow label, but its usage was obsoleted in <xref target="RFC1122" sectionFormat="of" section="3.2.1.8"/>.  
             </t>
             <t>
-                CIPSO (Commercial IP Security Option) has an implementation in the kernel, allowing for an operator to be able to run an audit on packets and discard anything that is not labeled correctly.  However, labeling does require additional configuration of the node to indicate which label the node is part of and that seems rather complex to setup and appears to be designed to support system-level tagging and not application-level tagging.
+                <xref target="I-D.ietf-cipso-ipsecurity"/> (Commercial IP Security Option) has an implementation in the kernel, allowing for an operator to be able to run an audit on packets and discard anything that is not labeled correctly.  However, labeling does require additional configuration of the node to indicate which label the node is part of and that seems rather complex to setup and appears to be designed to support system-level tagging and not application-level tagging.
             </t>
             <t>
                 As usage of IPv4 has been superseded by IPv6, it was determined that further effort for IPv4 was unwarranted.
@@ -304,10 +304,10 @@
     <section anchor="Security">
       <name>Security Considerations</name>
       <t>
-          The security considerations in RFC 6437 still apply. It states that “third parties should be unlikely to be able to guess the next value that a source of flow labels will choose”, but this use case specifically requires common marking for the majority of the bits for a specific pairing of experiment and application. 
+          The security considerations in <xref target="RFC6437" sectionFormat="of" section="6"/> still apply. It states that “third parties should be unlikely to be able to guess the next value that a source of flow labels will choose”, but this use case specifically requires common marking for the majority of the bits for a specific pairing of experiment and application. 
       </t>
       <t>
-          A related consideration is that well-known flow labels could further encourage pervasive monitoring attacks described in RFC 7258, but our use case for the flow labels is to intentionally permit monitoring use cases.  This use of the flow label is directly controlled by the end hosts choosing to participate.
+          A related consideration is that well-known flow labels could further encourage pervasive monitoring attacks described in <xref target="RFC7258"/>, but our use case for the flow labels is to intentionally permit monitoring use cases.  This use of the flow label is directly controlled by the end hosts choosing to participate.
       </t>
       <t>
           <!-- TODO: add something about flow label ecmp implementations here -->
@@ -322,40 +322,54 @@
       <name>References</name>
       <references>
         <name>Normative References</name>
-        
-        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
-        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
-        <!-- The recommended and simplest way to include a well known reference -->
-        
+
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8200.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6437.xml"/>
       </references>
  
       <references>
         <name>Informative References</name>
-       
-        <reference anchor="exampleRefMin">
-        <!-- [REPLACE/DELETE] Example minimum reference -->
+
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.1122.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3176.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3697.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5102.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6436.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7011.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7258.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7837.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7872.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8250.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9268.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9343.xml"/>
+
+        <reference anchor="IPv4-parameters" target="https://www.iana.org/assignments/ip-parameters/ip-parameters.xhtml">
           <front>
-            <title>Title [REPLACE]</title>
-            <author initials="Initials [REPLACE]" surname="Surname [REPLACE]">
-              <organization/>
-            </author>
-            <date year="2006"/>
-            <!-- [CHECK] -->
-          </front>
+              <title>Internet Protocol Version 4 (IPv4) Parameters</title>
+             <author/>
+         </front>
         </reference>
 
-        <reference anchor="exampleRefOrg" target="http://www.example.com/">
-        <!-- [REPLACE/DELETE] Example reference written by an organization not a person -->
-          <front>
-            <title>Title [REPLACE]</title>
-            <author>
-              <organization>Organization [REPLACE]</organization>
-            </author>
-            <date year="1984"/>
-            <!-- [CHECK] -->
-          </front>
-        </reference>       
-       
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-ippm-ioam-ipv6-options.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.yiakoumis-network-tokens.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.iab-path-signals-collaboration.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.herbert-ipv4-eh.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.krishnan-ipv6-hopbyhop.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-cipso-ipsecurity.xml"/>
+
+	<reference anchor="Lark" target="https://doi.org/10.1016/j.future.2016.03.010">
+	  <front>
+	    <title>Lark: An effective approach for software-defined networking in high throughput computing clusters</title>
+            <author initials="Z." surname="Zhang" fullname="Zhe Zhang"/>
+            <author initials="B." surname="Bockelman" fullname="Brian Bockelman"/>
+            <author initials="D." surname="Carder" fullname="Dale W. Carder"/>
+            <author initials="T." surname="Tannenbaum" fullname="Todd Tannenbaum"/>
+	    <date year="2017"/>
+	  </front>
+          <refcontent>Future Generation Computer Systems, Volume 72, Pages 105-117, ISSN 0167-739X</refcontent>
+	  <seriesInfo name="DOI" value="10.1016/j.future.2016.03.010"/>
+	</reference>
+        
       </references>
     </references>
     
