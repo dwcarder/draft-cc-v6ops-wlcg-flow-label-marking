@@ -51,6 +51,21 @@
       </address>
     </author>
 
+     <author fullname="Shawn McKee" initials="S." surname="McKee">
+      <organization>University of Michigan</organization>
+      <address>
+        <postal>
+          <street>367D West Hall</street>
+          <street>450 Church St</street>
+          <city>Ann Arbor</city>
+          <region>MI</region>
+          <code>48109</code>
+          <country>US</country>
+        </postal>        
+        <email>smckee@umich.edu</email>  
+      </address>
+    </author>
+
     <date year="2023"/>
     <!-- On draft subbmission:
          * If only the current year is specified, the current day and month will be used.
