@@ -73,7 +73,7 @@
         <t>
             This document describes an experimentally deployed approach currently used within the Worldwide Large Hadron Collider Computing Grid (WLCG) to mark packets with their project (experiment) and application. 
             The marking uses the 20-bit IPv6 Flow Label in each packet, with 15 bits used for semantics and 5 bits for entropy. 
-            Alternatives in particular use of IPv6 Extension Headers (EH) were considered, but found to not be practical. 
+            Alternatives, in particular use of IPv6 Extension Headers (EH), were considered but found to not be practical. 
             The WLCG is one of the largest worldwide research communities and has adopted IPv6 heavily for movement of many tens of PB of data annually, with the ultimate goal of running IPv6 only. 
         </t>
     </abstract>
@@ -91,22 +91,22 @@
           The Worldwide Large Hadron Collider Computing Grid (WLCG) as a specific (and very large) example of HEP research infrastructure supports multiple CERN experiments, with a reported 200PB of data generated annually and distributed to computing centers in over 40 countries. IPv6 is used heavily by the WLCG, with over 90% of the main storage facilities now supporting it, and a significant percentage of traffic flows being IPv6. The ultimate goal is to run the WLCG IPv6-only.
       </t>
       <t>
-          Analyzing the pattern of traffic flows in detail is critical for understanding how the various complex systems developed are actually using the network.  The motivation for the use of packet marking is to label traffic to indicate the user community and application workflow it is a part of so that the purpose of data transfers may be understood.  This capability is especially important for sites which support many simultaneous experiments' workflows where any worker node or storage system may quickly change between different users. With a standardized way of marking traffic, any intermediate network or end-site could quickly provide detailed visibility into HEP traffic to and from their site.  
+          Analyzing the pattern of traffic flows in detail is critical for understanding how the various complex systems developed are actually using the network.  The motivation for the use of packet marking is to label traffic to indicate the user community and application workflow it is a part of so that the purpose of data transfers may be understood.  This capability is especially important for sites which support many simultaneous experiments' workflows where any worker node or storage system may quickly change between different users. With a standardized way of marking traffic, any intermediate network or end-site could quickly provide detailed visibility into the nature of the HEP traffic running to and from their site.  
       </t>
       <t>
         Backbone networks may also use this metadata in order to summarize traffic as belonging to certain science experiments and their applications. HEP user communities may then use the data provided by participating backbone networks to characterize the scientific workloads running at global scale, measuring for example the impact of tradeoffs between storage and workload placement, or to examine that scarce resources such as undersea cables are used efficiently. 
       </t>
       <t>
-        While the initial rationale for the packet marking was better understanding of the flow of traffic belonging to certain experiments around Research and Education networks, there is also the potential for traffic to be steered by its Flow Label value.  
+        While the initial rationale for the packet marking was better understanding of the flow of traffic belonging to certain experiments around Research and Education (R&E) networks, there is also the potential for traffic to be steered by its Flow Label value.  
       </t>
       <t>
-        This document describes a packet marking scheme currently being applied and tested within the WLCG community, but the approach is extensible (given the number of bits available to mark experiments and experiment owners) to other HEP and research and education communities.
+        This document describes a packet marking scheme currently being applied and tested within the WLCG community, but the approach is extensible (given the number of bits available to mark experiments and experiment owners) to other HEP and R&E communities.
       </t>
       <t>
         A network flow is defined as a five tuple, i.e. source IP, destination IP, source port, destination port and protocol (TCP, UDP, …).  The packet marking is intended to complement the five tuple by denoting the packet owner (experiment/community) and the traffic type (application).  One application may source multiple network flows for example from multiple source ports or to multiple destination IPs but for accounting purposes they may all be of the same application "type" of traffic and corresponding to the same owner.  The applications would have, as part of their configuration, the owner and the type of traffic marking to set. A given host may be running multiple such applications. 
       </t>
       <t>
-              Summarization of this data is expected to be coarse. A set of applications working on the same task on different hosts would likely all use the same packet marking. Traffic "type" needs to be defined and agreed upon within a specific user community, the set of application owners, or users, need to be agreed upon within a limited domain.
+              Summarization of this data is expected to be coarse. A set of applications working on the same task on different hosts would likely all use the same packet marking. Traffic "type" needs to be defined and agreed upon within a specific user community, the set of application owners, or users, need to be agreed upon within a limited domain. But it would be considered normal for multiple network flows (in the five tuple sense) to share a common marking if they belong to the same experiment and application.
       </t>
     </section> <!-- end of intro -->
     
@@ -117,28 +117,28 @@
       </t>
 
           <section anchor="spec">
-            <name>Flow label specification</name>
+            <name>Setting the Flow Label bits</name>
             <t>
-                Packet marking is an approach using the 20 bit flow label field available in the IPv6 header. 
+                The packet marking approach uses all 20 bits of the flow label field available in the IPv6 header. 
             </t>
             <!-- TODO: put ascii art here -->
             <t>
-            The packet marking use of the flow label has the following characteristics and subfields,
-            containing the application and owner identifiers encoded in the following way:
+            The packet marking has the following characteristics and subfields,
+            containing the application and owner identifiers encoded as bits in the Flow label in the following way:
             </t>
             <ul>
-                <li>Application identifier is encoded in 6 bits in position 24-29
+                <li>The application identifier uses 6 bits, and is encoded in bits 13-18
                 </li>
-                <li>Entropy bits are 5 bits in positions 12-13, 23, 30-31, and are set at random once per flow for the duration of its lifetime.
+                <li>Entropy bits are 5 bits in positions 1, 2, 12, 19 and 20, and are set at random once per network flow for the duration of its lifetime. 
                 </li> 
-                <li>Owner identifier is encoded in 9 bits 14-22, and these bits are used in reversed order to allow for possible future adjustments.
+                <li>Owner identifier uses 9 bits and is encoded in bits 3-11, and these bits are used in reversed order to allow for possible future adjustments of the bit boundary.
                 </li>
             </ul>
             <t>
-            The flow label is set on each packet that is issued by the given application and must follow RFC6437. 
+            The flow label is set on each packet that is issued by the given application.  Network flows belonging to the same experiment and application may thus have 32 different flow label values.
             </t>
             <t>
-            As the initial work is to be applicable within the global research and education user community, the majority of the bits available are used to indicate the science domain owner and, therefore, less bits are available to denote traffic type. 
+            As the initial work is to be applicable within the global R&E user community, the majority of the bits available are used to indicate the science domain owner and, therefore, fewer bits are available to denote traffic type. 
             </t>
         </section> <!-- end of spec -->
 
@@ -150,13 +150,19 @@
             <t>
                 RFC 8200 states that “the 20-bit Flow Label field in the IPv6 header is used by a source to label sequences of packets to be treated in the network as a single flow”.
             </t>
+          <t>
             <t>
                 RFC 6437 states that “It is therefore RECOMMENDED that source hosts support the flow label by setting the flow label field for all packets of a given flow to the same value chosen from an approximation to a discrete uniform distribution“ and that the algorithm (for setting the Flow Label value) “SHOULD ensure that the resulting flow label values are unique with high probability.”
             </t>
             <t>
                 RFC 6437 further adds that “a specific goal is to enable and encourage the use of the flow label for various forms of stateless load distribution, especially across Equal Cost Multi-Path (ECMP) and/or Link Aggregation Group (LAG) paths.”
             </t>
-                <!-- TODO: add discussion, why we have 5 entropy bits -->
+            <t>
+                  In this packet marking scheme, all traffic belonging to the same experiment and application, e.g., "ALICE" and "XRootD", will carry a flow label with 15 fixed, common bits and 5 varying (entropy) bits.  Given use of the Flow label as described above should use 20 entropy bits (with a uniform distribution), it is not the case here that the flow label values will be unique with such a high probability, i.e., 1 in 32 network flows will in principle be unique rather than around 1 in a million.
+          </t>
+            <t>
+              The 5 entropy bits are used to still support a level of conformance with the requirement stated in RFC 6437 to support traffic distribution in ECMP and LAG scenarios. The number of bits chosen is a tradeoff between the number of bits available for the experiment and application labelling and the number of entropy bits.
+            </t>
         </section> <!-- end of deviations -->
 
         <section anchor="collection">
