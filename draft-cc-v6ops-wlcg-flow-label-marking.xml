@@ -97,10 +97,10 @@
         Backbone networks may also use this metadata in order to summarize traffic as belonging to certain science experiments and their applications. HEP user communities may then use the data provided by participating backbone networks to characterize the scientific workloads running at global scale, measuring for example the impact of tradeoffs between storage and workload placement, or to examine that scarce resources such as undersea cables are used efficiently. 
       </t>
       <t>
-        While the initial rationale for the packet marking was better understanding of the flow of traffic belonging to certain experiments around Research and Education (R&E) networks, there is also the potential for traffic to be steered by its Flow Label value.  
+        While the initial rationale for the packet marking was better understanding of the flow of traffic belonging to certain experiments around Research and Education (R&#38;E) networks, there is also the potential for traffic to be steered by its Flow Label value.  
       </t>
       <t>
-        This document describes a packet marking scheme currently being applied and tested within the WLCG community, but the approach is extensible (given the number of bits available to mark experiments and experiment owners) to other HEP and R&E communities.
+        This document describes a packet marking scheme currently being applied and tested within the WLCG community, but the approach is extensible (given the number of bits available to mark experiments and experiment owners) to other HEP and R&#38;E communities.
       </t>
       <t>
         A network flow is defined as a five tuple, i.e. source IP, destination IP, source port, destination port and protocol (TCP, UDP, …).  The packet marking is intended to complement the five tuple by denoting the packet owner (experiment/community) and the traffic type (application).  One application may source multiple network flows for example from multiple source ports or to multiple destination IPs but for accounting purposes they may all be of the same application "type" of traffic and corresponding to the same owner.  The applications would have, as part of their configuration, the owner and the type of traffic marking to set. A given host may be running multiple such applications. 
@@ -138,7 +138,7 @@
             The flow label is set on each packet that is issued by the given application.  Network flows belonging to the same experiment and application may thus have 32 different flow label values.
             </t>
             <t>
-            As the initial work is to be applicable within the global R&E user community, the majority of the bits available are used to indicate the science domain owner and, therefore, fewer bits are available to denote traffic type. 
+            As the initial work is to be applicable within the global R&#38;E user community, the majority of the bits available are used to indicate the science domain owner and, therefore, fewer bits are available to denote traffic type. 
             </t>
         </section> <!-- end of spec -->
 
@@ -150,7 +150,6 @@
             <t>
                 <xref target="RFC8200" sectionFormat="of" section="6"/> states that “the 20-bit Flow Label field in the IPv6 header is used by a source to label sequences of packets to be treated in the network as a single flow”.
             </t>
-          <t>
             <t>
                 <xref target="RFC6437" sectionFormat="of" section="3"/> states that “It is therefore RECOMMENDED that source hosts support the flow label by setting the flow label field for all packets of a given flow to the same value chosen from an approximation to a discrete uniform distribution“ and that the algorithm (for setting the Flow Label value) “SHOULD ensure that the resulting flow label values are unique with high probability.” 
             </t>
