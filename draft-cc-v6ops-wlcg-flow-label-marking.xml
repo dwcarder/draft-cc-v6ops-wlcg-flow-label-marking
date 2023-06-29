@@ -118,7 +118,7 @@
         This document describes a packet marking scheme currently being applied and tested within the WLCG community, but the approach is extensible (given the number of bits available to mark experiments and experiment owners) to other HEP and R&#38;E communities.
       </t>
       <t>
-        A network flow is defined as a five tuple, i.e. source IP, destination IP, source port, destination port and protocol (TCP, UDP, …).  The packet marking is intended to complement the five tuple by denoting the packet owner (experiment/community) and the traffic type (application).  One application may source multiple network flows for example from multiple source ports or to multiple destination IPs but for accounting purposes they may all be of the same application "type" of traffic and corresponding to the same owner.  The applications would have, as part of their configuration, the owner and the type of traffic marking to set. A given host may be running multiple such applications. 
+        A network flow is defined as a five tuple, i.e. source IP, destination IP, source port, destination port and protocol (TCP, UDP, …).  The packet marking is intended to complement the five tuple by denoting the packet owner (experiment/community) and the traffic type (application).  One application may source multiple network flows for example from multiple source ports or to multiple destination IPs but for accounting purposes they may all be of the same application "type" of traffic and corresponding to the same owner, and inherently asking to be treated the same by the network.  The applications would have, as part of their configuration, the owner and the type of traffic marking to set. A given host may be running multiple such applications. 
       </t>
       <t>
               Summarization of this data is expected to be coarse. A set of applications working on the same task on different hosts would likely all use the same packet marking. Traffic "type" needs to be defined and agreed upon within a specific user community, the set of application owners, or users, need to be agreed upon within a limited domain. But it would be considered normal for multiple network flows (in the five tuple sense) to share a common marking if they belong to the same experiment and application.
@@ -136,7 +136,7 @@
             <t>
                 The packet marking approach uses all 20 bits of the flow label field available in the IPv6 header. 
             </t>
-            <!-- TODO: put ascii art here -->
+            <!-- TODO: put ascii art here? -->
             <t>
             The packet marking has the following characteristics and subfields,
             containing the application and owner identifiers encoded as bits in the Flow label in the following way:
@@ -150,7 +150,7 @@
                 </li>
             </ul>
             <t>
-            The flow label is set on each packet that is issued by the given application.  Network flows belonging to the same experiment and application may thus have 32 different flow label values.
+            The flow label is set on each packet that is sent by the given application.  Network flows belonging to the same experiment and application may thus have 32 different flow label values.
             </t>
             <t>
             As the initial work is to be applicable within the global R&#38;E user community, the majority of the bits available are used to indicate the science domain owner and, therefore, fewer bits are available to denote traffic type. 
@@ -175,7 +175,7 @@
                   In this packet marking scheme, all traffic belonging to the same experiment and application, e.g., "ALICE" and "XRootD", will carry a flow label with 15 fixed, common bits and 5 varying (entropy) bits.  Given use of the Flow label as described above should use 20 entropy bits (with a uniform distribution), it is not the case here that the flow label values will be unique with such a high probability, i.e., 1 in 32 network flows will in principle be unique rather than around 1 in a million.
           </t>
             <t>
-              The 5 entropy bits are used to still support a level of conformance with the requirement stated in RFC 6437 to support traffic distribution in ECMP and LAG scenarios. The number of bits chosen is a tradeoff between the number of bits available for the experiment and application labelling and the number of entropy bits.
+              The 5 entropy bits are used to still support a level of conformance with the requirement stated in RFC 6437 to support traffic distribution in ECMP and LAG scenarios. The number of bits chosen is a tradeoff between the number of bits available for the experiment and application labeling and the number of entropy bits.
             </t>
         </section> <!-- end of deviations -->
 
@@ -195,15 +195,16 @@
         <section anchor="implications">
             <name>Implications for traffic analysis</name>
             <t>
-                Corresponding to the expectations in <xref target="RFC6436" sectionFormat="of" section="4"/>, a brief, unscientific sampling of non-MPLS encapsulated traffic collected via IPFIX on ESnet5 does show that there is a mix of <xref target="RFC3697"/> compliant hosts where all-zero flow labels are used, as well as updated <xref target="RFC6437"/> compliant hosts that by default choose uniformly distributed labels between 1 and 0xFFFFF.  A traffic analysis system may need to know which specific endpoints are using the packet marking meaning of the flow label and that the field's values are relevant.  As the deployments for are for rather narrow accounting use cases within specific user communities, it has been practical to match for known flow labels vs trying to keep the accounting state for 2^20 possible labels in use for each link of the network.  
+                Corresponding to the expectations in <xref target="RFC6436" sectionFormat="of" section="4"/>, a brief, unscientific sampling of non-MPLS encapsulated traffic collected via IPFIX on ESnet5 does show that there is a mix of <xref target="RFC3697"/> compliant hosts where all-zero flow labels are used, as well as updated <xref target="RFC6437"/> compliant hosts that by default choose uniformly distributed labels between 1 and 0xFFFFF.  
+                A traffic analysis system may need to know which specific endpoints are using the packet marking meaning of the flow label and that the field's values are relevant.  
+                As the deployments are for rather narrow accounting use cases within specific user communities, it has been practical to match for known flow labels vs trying to keep the accounting state for 2^20 possible labels in use for each link of the network.  
             </t>
         </section> <!-- end of implications -->
 
         <section anchor="registry">
             <name>Use of a registry</name>
             <t>
-                <!-- TODO -->
-                A registry is used to track known users/applications.  
+                A registry, known as <xref target="SciTags"/> is used to track known users/applications.  For the current expiramental use, this is effectively operating as a centralized resource and API.  Future work may include a more complex system for broader distribution.
             </t>
             <t>
                 A given intermediate network capturing the flow data doesn't necessarily need to decode this information, as it's only truly relevant to the end sites using this scheme.
@@ -213,10 +214,8 @@
         <section anchor="considerations">
             <name>Additional Considerations</name>
             <t>
-                <!-- TODO -->
-                If there are concerns about preserving entropy and reducing the possible collisions with the standard use of the IPv6 Flow Label, we could use the "entropy" bits defined above to instead calculate a Hamming Code.  A Hamming Code calculates a set of Parity Bits to be used to extend a set of Message(Data) Bits, that will maximize the number of bits that are different between "valid" messages.  This may better support existing use of the flow label for ECMP as described in <xref target="RFC6437"/>.
+                If there are concerns about preserving entropy and reducing the possible collisions with the standard use of the IPv6 Flow Label, we could use the "entropy" bits defined above to instead calculate a Hamming Code.  A Hamming Code calculates a set of Parity Bits to be used to extend a set of Message (Data) Bits, that will maximize the number of bits that are different between "valid" messages.  This may better support existing use of the flow label for ECMP as described in <xref target="RFC6437"/>.
             </t>
-                <!-- TODO add something on whether or not the label should be used for forwarding -->
         </section> <!-- end of considerations -->
 
     </section> <!-- end of usage -->
@@ -227,11 +226,7 @@
         <section anchor="options">
             <name>IPv6 Hop-by-Hop or Destination Options</name>
             <t>
-                Extension headers are known to be problematic in that they have a history of being filtered or dropped in transit, as measured in <xref target="RFC7872"/>. It MIGHT be that such issues are less common in Research and Education networks.  As an example, <xref target="RFC9343"/> defines an alternate marking encoding for use in either hop-by-hop or destination options headers.  <xref target="RFC7837"/> defines a marking in support of congestion control (ConEx), and <xref target="RFC8250"/> is a Standards Track document that defines a destination option for Performance and Diagnostic Metrics (PDM) for IPv6.   There is also this draft defining an option <xref target="I-D.ietf-ippm-ioam-ipv6-options"/>, for the use case of carrying OAM information.
-            </t>
-            <t>
-                <!-- TODO -->
-                TODO: look through https://datatracker.ietf.org/doc/rfc9098/
+                Extension headers are known to be problematic in that they have a history of being filtered or dropped in transit, as measured in <xref target="RFC7872"/> with substantual further discussion in <xref target="RFC9098"/>. It might be that such issues are less common in Research and Education networks.  As an example, <xref target="RFC9343"/> defines an alternate marking encoding for use in either hop-by-hop or destination options headers.  <xref target="RFC7837"/> defines a marking in support of congestion control (ConEx), and <xref target="RFC8250"/> is a Standards Track document that defines a destination option for Performance and Diagnostic Metrics (PDM) for IPv6.   There is also this draft defining an option <xref target="I-D.ietf-ippm-ioam-ipv6-options"/>, for the use case of carrying OAM information.
             </t>
             <t>
                 The Destination option header could therefore be a logical choice to place application-specific telemetry identifiers, as there is less of a constraint on space than the IPv6 Flow Label, less history of defined pre-existing intentions from the standards body, and low deployed usage on the Internet.   However, at present, the linux implementation in particular requires either setuid 0 or CAP_NET_RAW capability to be able to call setsockopt(s, IPPROTO_IPV6, IPV6_DSTOPTS, ext_hdr_p, ext_hdr_size, making it unusable by typical userspace applications.  There has been a set of patches made that could address this as well as extend the functionality, though they have not been met with support from the linux network maintainers.  Additionally, extracting that field by intermediate routers and exporting it via IPFIX may be further subject to lack of support compared to the fixed field and known position of the flow label.
@@ -294,8 +289,7 @@
         <section anchor="firefly">
             <name>Firefly Packets for marking Network Flows</name>
             <t>
-                <!-- TODO -->
-                Separate packets are sent along side application traffic from the source to the same destination node, but to port xxxx.  These packets contain rich metadata about the flow, formatted as json in syslog.
+                Separate packets are sent along side application traffic from the source to the same destination node, but always to specific destination port.  These packets are large enough to contain rich metadata about the flow, formatted as a json payload carried in syslog.  These telemetry packets can be collected en route by participating networks, by the end host, or sent to a central collector.
             </t>
         </section> <!-- end of firefly -->
 
@@ -303,10 +297,11 @@
 
     <section anchor="implementations">
         <name>Implementation Status</name>
-        <t>
-            <!-- TODO -->
-            TODO, briefly provide pointers to and describe FTS, Rucio, Stardust
-        </t>
+          <ul>
+              <li><xref target="XRootD"/> data transfer software suite, implemented in C++.  </li>
+              <li><xref target="FlowD"/> software accounting service, containing a backend plugin with a Linux kernel EBPF implementation.</li>
+              <li><xref target="Iperf3"/> throughput testing as invoked from the <xref target="PerfSONAR"/> suite of globally deployed test endpoints.</li> 
+          </ul>
     </section>
 
     <section anchor="IANA">
@@ -323,10 +318,7 @@
       <t>
           A related consideration is that well-known flow labels could further encourage pervasive monitoring attacks described in <xref target="RFC7258"/>, but our use case for the flow labels is to intentionally permit monitoring use cases.  This use of the flow label is directly controlled by the end hosts choosing to participate.
       </t>
-      <t>
-          <!-- TODO: add something about flow label ecmp implementations here -->
-          TODO add something about flow label ecmp implementations here
-      </t>
+          <!-- TODO: add something about flow label ecmp implementations here? -->
     </section>
     
   </middle>
@@ -354,6 +346,7 @@
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7837.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7872.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8250.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9098.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9268.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9343.xml"/>
 
@@ -383,6 +376,41 @@
           <refcontent>Future Generation Computer Systems, Volume 72, Pages 105-117, ISSN 0167-739X</refcontent>
 	  <seriesInfo name="DOI" value="10.1016/j.future.2016.03.010"/>
 	</reference>
+
+        <reference anchor="SciTags" target="https://www.scitags.org/">
+          <front>
+              <title>Scientific network tags (scitags) website and accompanying registry</title>
+             <author/>
+         </front>
+        </reference>
+
+        <reference anchor="XRootD" target="https://xrootd.slac.stanford.edu/">
+          <front>
+              <title>XRootD software framework</title>
+             <author/>
+         </front>
+        </reference>
+
+        <reference anchor="FlowD" target="https://github.com/scitags/flowd">
+          <front>
+              <title>FlowD software</title>
+             <author/>
+         </front>
+        </reference>
+
+        <reference anchor="Iperf3" target="https://github.com/esnet/iperf">
+          <front>
+              <title>Iperf3 software</title>
+             <author/>
+         </front>
+        </reference>
+
+        <reference anchor="PerfSONAR" target="https://www.perfsonar.net/">
+          <front>
+              <title>PerfSONAR performance Service-Oriented Network monitoring ARchitecture</title>
+             <author/>
+         </front>
+        </reference>
         
       </references>
     </references>
