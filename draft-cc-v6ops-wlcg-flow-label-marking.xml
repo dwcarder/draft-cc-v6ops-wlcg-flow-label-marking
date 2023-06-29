@@ -118,11 +118,21 @@
         This document describes a packet marking scheme currently being applied and tested within the WLCG community, but the approach is extensible (given the number of bits available to mark experiments and experiment owners) to other HEP and R&#38;E communities.
       </t>
       <t>
-        A network flow is defined as a five tuple, i.e. source IP, destination IP, source port, destination port and protocol (TCP, UDP, …).  The packet marking is intended to complement the five tuple by denoting the packet owner (experiment/community) and the traffic type (application).  One application may source multiple network flows for example from multiple source ports or to multiple destination IPs but for accounting purposes they may all be of the same application "type" of traffic and corresponding to the same owner, and inherently asking to be treated the same by the network.  The applications would have, as part of their configuration, the owner and the type of traffic marking to set. A given host may be running multiple such applications. 
+        A network flow is defined as a five tuple, i.e. source IP, destination IP, source port, destination port and protocol (TCP, UDP, ...).  The packet marking is intended to complement the five tuple by denoting the packet owner (experiment/community) and the traffic type (application).  One application may source multiple network flows for example from multiple source ports or to multiple destination IPs but for accounting purposes they may all be of the same application "type" of traffic and corresponding to the same owner, and inherently asking to be treated the same by the network.  The applications would have, as part of their configuration, the owner and the type of traffic marking to set. A given host may be running multiple such applications. 
       </t>
       <t>
               Summarization of this data is expected to be coarse. A set of applications working on the same task on different hosts would likely all use the same packet marking. Traffic "type" needs to be defined and agreed upon within a specific user community, the set of application owners, or users, need to be agreed upon within a limited domain. But it would be considered normal for multiple network flows (in the five tuple sense) to share a common marking if they belong to the same experiment and application.
       </t>
+
+      <section>
+        <name>Requirements Language</name>
+        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
+          "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT
+          RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
+          interpreted as described in BCP 14 <xref target="RFC2119"/>
+          <xref target="RFC8174"/> when, and only when, they appear in
+          all capitals, as shown here.</t>
+      </section>
     </section> <!-- end of intro -->
     
     <section anchor="usage">
@@ -163,13 +173,13 @@
                 Part of the reason for documenting this use of the IPv6 Flow Label was to note that, at least in the domain of certain HEP research networks, the IPv6 Flow Label is not being used exactly as specified, and to record the reason why.
             </t>
             <t>
-                <xref target="RFC8200" sectionFormat="of" section="6"/> states that “the 20-bit Flow Label field in the IPv6 header is used by a source to label sequences of packets to be treated in the network as a single flow”.
+                <xref target="RFC8200" sectionFormat="of" section="6"/> states that "the 20-bit Flow Label field in the IPv6 header is used by a source to label sequences of packets to be treated in the network as a single flow".
             </t>
             <t>
-                <xref target="RFC6437" sectionFormat="of" section="3"/> states that “It is therefore RECOMMENDED that source hosts support the flow label by setting the flow label field for all packets of a given flow to the same value chosen from an approximation to a discrete uniform distribution“ and that the algorithm (for setting the Flow Label value) “SHOULD ensure that the resulting flow label values are unique with high probability.” 
+                <xref target="RFC6437" sectionFormat="of" section="3"/> states that "It is therefore RECOMMENDED that source hosts support the flow label by setting the flow label field for all packets of a given flow to the same value chosen from an approximation to a discrete uniform distribution" and that the algorithm (for setting the Flow Label value) "SHOULD ensure that the resulting flow label values are unique with high probability." 
             </t>
             <t>
-                <xref target="RFC6437" sectionFormat="of" section="1"/> further adds that “a specific goal is to enable and encourage the use of the flow label for various forms of stateless load distribution, especially across Equal Cost Multi-Path (ECMP) and/or Link Aggregation Group (LAG) paths.”
+                <xref target="RFC6437" sectionFormat="of" section="1"/> further adds that "a specific goal is to enable and encourage the use of the flow label for various forms of stateless load distribution, especially across Equal Cost Multi-Path (ECMP) and/or Link Aggregation Group (LAG) paths."
             </t>
             <t>
                   In this packet marking scheme, all traffic belonging to the same experiment and application, e.g., "ALICE" and "XRootD", will carry a flow label with 15 fixed, common bits and 5 varying (entropy) bits.  Given use of the Flow label as described above should use 20 entropy bits (with a uniform distribution), it is not the case here that the flow label values will be unique with such a high probability, i.e., 1 in 32 network flows will in principle be unique rather than around 1 in a million.
@@ -232,14 +242,14 @@
                 The Destination option header could therefore be a logical choice to place application-specific telemetry identifiers, as there is less of a constraint on space than the IPv6 Flow Label, less history of defined pre-existing intentions from the standards body, and low deployed usage on the Internet.   However, at present, the linux implementation in particular requires either setuid 0 or CAP_NET_RAW capability to be able to call setsockopt(s, IPPROTO_IPV6, IPV6_DSTOPTS, ext_hdr_p, ext_hdr_size, making it unusable by typical userspace applications.  There has been a set of patches made that could address this as well as extend the functionality, though they have not been met with support from the linux network maintainers.  Additionally, extracting that field by intermediate routers and exporting it via IPFIX may be further subject to lack of support compared to the fixed field and known position of the flow label.
             </t>
             <t>
-                    While in principle it’s possible, it is less practical to use a Hop-by-Hop option, for the reasons discussed in <xref target="I-D.krishnan-ipv6-hopbyhop"/>.  However, there is a recent example of its use in <xref target="RFC9268"/> where a host can signal this option, routers will not process it unless configured to do so, and if not, they may well drop the packet according to <xref target="RFC8200" sectionFormat="of" section="4.8"/>.
+                    While in principle it's possible, it is less practical to use a Hop-by-Hop option, for the reasons discussed in <xref target="I-D.krishnan-ipv6-hopbyhop"/>.  However, there is a recent example of its use in <xref target="RFC9268"/> where a host can signal this option, routers will not process it unless configured to do so, and if not, they may well drop the packet according to <xref target="RFC8200" sectionFormat="of" section="4.8"/>.
             </t>
         </section> <!-- end of options -->
 
         <section anchor="addresses">
             <name>IPv6 Addresses as identifiers</name>
             <t>
-                Given the size of IPv6 addresses, it is possible to mark or “color” packets by using specific site network prefixes (within a site /64) or values in (a part of) the host identifier part of an  address (typically 64 bits). Hosts already currently use multiple IPv6 source addresses.  Applications would need to bind sockets to the correct source address, per flow, corresponding to the accounting details to be conveyed.  Dispatching computation jobs into a high-throughput computational cluster along with network-specific metadata has for example been explored in <xref target="Lark"/>.
+                Given the size of IPv6 addresses, it is possible to mark or "color" packets by using specific site network prefixes (within a site /64) or values in (a part of) the host identifier part of an  address (typically 64 bits). Hosts already currently use multiple IPv6 source addresses.  Applications would need to bind sockets to the correct source address, per flow, corresponding to the accounting details to be conveyed.  Dispatching computation jobs into a high-throughput computational cluster along with network-specific metadata has for example been explored in <xref target="Lark"/>.
             </t>
             <t>
                 Hosts serving different users/applications would need multiple addresses, one for each possible, configured in advance of the application requiring it.   Adding an IP address onto a host requires root level access to a system and is typically not available as a dynamic function available for userspace.  There also may be limits on the number of source addresses able to be concurrently configured, so a garbage collection process may need to deprovision addresses no longer in use.  This dynamic use of source addresses also may cause operational issues around access-control list management, and security implementations at a site.
@@ -259,10 +269,10 @@
         <section anchor="tokens">
             <name>Network Tokens</name>
             <t>
-                A recently published IETF personal draft documents the concept of “Network Tokens”, see <xref target="I-D.yiakoumis-network-tokens"/>.
+                A recently published IETF personal draft documents the concept of "Network Tokens", see <xref target="I-D.yiakoumis-network-tokens"/>.
             </t>
             <t>
-                “A network token is a small piece of data that end users attach to their packets.  As packets flow through the network, intermediate nodes MAY detect tokens, interpret them, and apply the desired service to the packets that carry them (and possibly to all other packets from the same flow).  For example, a token might just state the name of the application that a packet originates from.“  The draft proposes a 28-bit token ID field.  It discusses multiple mechanisms for tokens to be conveyed; some may be applicable to IPv4.  <xref target="I-D.iab-path-signals-collaboration"/> puts this work into a broader context.
+                "A network token is a small piece of data that end users attach to their packets.  As packets flow through the network, intermediate nodes MAY detect tokens, interpret them, and apply the desired service to the packets that carry them (and possibly to all other packets from the same flow).  For example, a token might just state the name of the application that a packet originates from."  The draft proposes a 28-bit token ID field.  It discusses multiple mechanisms for tokens to be conveyed; some may be applicable to IPv4.  <xref target="I-D.iab-path-signals-collaboration"/> puts this work into a broader context.
             </t>
         </section> <!-- end of tokens -->
 
@@ -313,7 +323,7 @@
     <section anchor="Security">
       <name>Security Considerations</name>
       <t>
-          The security considerations in <xref target="RFC6437" sectionFormat="of" section="6"/> still apply. It states that “third parties should be unlikely to be able to guess the next value that a source of flow labels will choose”, but this use case specifically requires common marking for the majority of the bits for a specific pairing of experiment and application. 
+          The security considerations in <xref target="RFC6437" sectionFormat="of" section="6"/> still apply. It states that "third parties should be unlikely to be able to guess the next value that a source of flow labels will choose", but this use case specifically requires common marking for the majority of the bits for a specific pairing of experiment and application. 
       </t>
       <t>
           A related consideration is that well-known flow labels could further encourage pervasive monitoring attacks described in <xref target="RFC7258"/>, but our use case for the flow labels is to intentionally permit monitoring use cases.  This use of the flow label is directly controlled by the end hosts choosing to participate.
@@ -329,6 +339,8 @@
       <references>
         <name>Normative References</name>
 
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8200.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6437.xml"/>
       </references>
