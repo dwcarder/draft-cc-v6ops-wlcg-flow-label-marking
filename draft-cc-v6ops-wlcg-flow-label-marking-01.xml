@@ -11,7 +11,7 @@
 <rfc
   xmlns:xi="http://www.w3.org/2001/XInclude"
   category="info"
-  docName="draft-cc-v6ops-wlcg-flow-label-marking-00"
+  docName="draft-cc-v6ops-wlcg-flow-label-marking-01"
   ipr="trust200902"
   obsoletes=""
   updates=""
@@ -23,7 +23,7 @@
     <title abbrev="IPv6 Packet Marking">Use of the IPv6 Flow Label for WLCG Packet Marking</title>
     <!-- The abbreviated title is required if the full title is longer than 39 characters -->
 
-    <seriesInfo name="Internet-Draft" value="draft-cc-v6ops-wlcg-flow-label-marking-00"/>
+    <seriesInfo name="Internet-Draft" value="draft-cc-v6ops-wlcg-flow-label-marking-01"/>
    
     <author fullname="Dale W. Carder" initials="D." surname="Carder">
       <organization>Energy Sciences Network</organization>
