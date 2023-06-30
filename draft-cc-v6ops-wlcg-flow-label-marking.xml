@@ -66,6 +66,19 @@
       </address>
     </author>
 
+     <author fullname="Marian Babik" initials="M." surname="Babik">
+      <organization>CERN</organization>
+      <address>
+        <postal>
+          <street>Espl. des Particules 1</street>
+          <city>Geneva</city>
+          <code>1211</code>
+          <country>Switzerland</country>
+        </postal>        
+        <email>marian.babik@cern.ch</email>  
+      </address>
+    </author>
+
     <date year="2023"/>
     <!-- On draft subbmission:
          * If only the current year is specified, the current day and month will be used.
@@ -118,7 +131,7 @@
         This document describes a packet marking scheme currently being applied and tested within the WLCG community, but the approach is extensible (given the number of bits available to mark experiments and experiment owners) to other HEP and R&#38;E communities.
       </t>
       <t>
-        A network flow is defined as a five tuple, i.e. source IP, destination IP, source port, destination port and protocol (TCP, UDP, ...).  The packet marking is intended to complement the five tuple by denoting the packet owner (experiment/community) and the traffic type (application).  One application may source multiple network flows for example from multiple source ports or to multiple destination IPs but for accounting purposes they may all be of the same application "type" of traffic and corresponding to the same owner, and inherently asking to be treated the same by the network.  The applications would have, as part of their configuration, the owner and the type of traffic marking to set. A given host may be running multiple such applications. 
+        A network flow is defined as a five tuple, i.e. source IP, destination IP, source port, destination port and protocol (TCP, UDP, ...).  The packet marking is intended to complement the five tuple by denoting the packet owner (experiment/community) and the traffic type (application). One application may source multiple network flows for example from multiple source ports or to multiple destination IPs but for accounting purposes they may all be of the same application "type" of traffic and corresponding to the same owner, and inherently asking to be treated the same by the network. The applications would have, as part of their configuration, the owner and the type of traffic marking to set. A given host may be running multiple such applications. 
       </t>
       <t>
               Summarization of this data is expected to be coarse. A set of applications working on the same task on different hosts would likely all use the same packet marking. Traffic "type" needs to be defined and agreed upon within a specific user community, the set of application owners, or users, need to be agreed upon within a limited domain. But it would be considered normal for multiple network flows (in the five tuple sense) to share a common marking if they belong to the same experiment and application.
@@ -146,17 +159,31 @@
             <t>
                 The packet marking approach uses all 20 bits of the flow label field available in the IPv6 header. 
             </t>
-            <!-- TODO: put ascii art here? -->
+           	<artwork>
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|Version| Traffic Class |           Flow Label                  |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|         Payload Length        |  Next Header  |   Hop Limit   |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                </artwork>
             <t>
             The packet marking has the following characteristics and subfields,
             containing the application and owner identifiers encoded as bits in the Flow label in the following way:
             </t>
+           	<artwork>	          
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|Flow Label Bits                                            |
+|01|02|03|04|05|06|07|08|09|10|11|12|13|14|15|16|17|18|19|20| 
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|E | E| C| C| C| C| C| C| C| C| C| E| A| A| A| A| A| A| E| E|
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+                </artwork>
             <ul>
-                <li>The application identifier uses 6 bits, and is encoded in bits 13-18
+                <li>The application identifier uses 6 bits (A), and is encoded in bits 13-18
                 </li>
-                <li>Entropy bits are 5 bits in positions 1, 2, 12, 19 and 20, and are set at random once per network flow for the duration of its lifetime. 
+                <li>Entropy bits (E) are 5 bits in positions 1, 2, 12, 19 and 20, and are set at random once per network flow for the duration of its lifetime. 
                 </li> 
-                <li>Owner identifier uses 9 bits and is encoded in bits 3-11, and these bits are used in reversed order to allow for possible future adjustments of the bit boundary.
+                <li>Owner identifier uses 9 bits (C) and is encoded in bits 3-11, and these bits are used in reversed order to allow for possible future adjustments of the bit boundary.
                 </li>
             </ul>
             <t>
@@ -195,7 +222,7 @@
                 As packets are marked using the IPv6 flow label, it is possible for intermediate routers to sample traffic in the forwarding hardware and send this data off to central collectors for analysis.  In many network environments, the standard approach is for a hardware-specific implementation on a router to sample the traffic and use the IPFIX protocol <xref target="RFC7011"/> to send the sampled data to a collector.  <xref target="RFC5102" sectionFormat="of" section="5.4.21"/> defines field #31 for carrying the IPv6 Flow Label information, and major router hardware and collector software implementations are known to support this.
             </t>
             <t>
-                Some hardware platforms, primarily with a lineage more firmly rooted in switching vs routing, support traffic sampling via sflow <xref target="RFC3176"/>.  Unlike IPFIX, the traffic is not summarized by the router/switch, but a significant part of the sampled raw packet is encapsulated and sent to the collector for analysis. sFlow datagrams include one or more packet flow records which in turn include the original datagram header. Individual fields such as the IPv6 flow label are able to be collected.
+                Some hardware platforms, primarily with a lineage more firmly rooted in switching vs routing, support traffic sampling via sflow <xref target="RFC3176"/>.  Unlike IPFIX, the traffic is not summarized by the router/switch, but a significant part of the sampled raw packet is encapsulated and sent to the collector for analysis. sFlow datagrams include one or more packet flow records which in turn include the original datagram header <xref target="SFlow"/>. Individual fields such as the IPv6 flow label are able to be collected.
             </t>
             <t>
                 Traffic mirroring and/or optical taps can also be used to copy raw traffic to a server for analysis.  The data rates, number of links, and power availability to run servers for large scale collection may make traditional packet capture and analysis impractical in many environments such as REN (Research and Education Network) environments, though there has been initial success with the P4 implementation running on the FPGA platform deployed throughout ESnet.  
@@ -308,9 +335,9 @@
     <section anchor="implementations">
         <name>Implementation Status</name>
           <ul>
-              <li><xref target="XRootD"/> data transfer software suite, implemented in C++.  </li>
               <li><xref target="FlowD"/> software accounting service, containing a backend plugin with a Linux kernel EBPF implementation.</li>
-              <li><xref target="Iperf3"/> throughput testing as invoked from the <xref target="PerfSONAR"/> suite of globally deployed test endpoints.</li> 
+              <li><xref target="Iperf3"/> throughput testing as invoked from the <xref target="PerfSONAR"/> suite of globally deployed test endpoints.</li>
+	      <li><xref target="XRootD"/> data transfer software suite, implemented in C++.  </li>  
           </ul>
     </section>
 
@@ -423,6 +450,14 @@
              <author/>
          </front>
         </reference>
+
+        <reference anchor="SFlow" target="https://blog.sflow.com/2022/11/scientific-network-tags-scitags.html">
+          <front>
+              <title>sFlow telemetry streaming of SciTags</title>
+             <author/>
+         </front>
+        </reference>
+
         
       </references>
     </references>
