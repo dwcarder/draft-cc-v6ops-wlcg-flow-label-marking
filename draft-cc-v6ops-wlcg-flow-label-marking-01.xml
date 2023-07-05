@@ -323,10 +323,10 @@
 
         </section> <!-- end of ipv4 -->
 
-        <section anchor="firefly">
+        <section anchor="firefly-flow-marking">
             <name>Firefly Packets for marking Network Flows</name>
             <t>
-                Separate packets are sent along side application traffic from the source to the same destination node, but always to specific destination port.  These packets are large enough to contain rich metadata about the flow, formatted as a json payload carried in syslog.  These telemetry packets can be collected en route by participating networks, by the end host, or sent to a central collector.
+                <xref target="Firefly"/> packets are an approach to mark flows by sending separate telemetry packets along side application traffic from the source to the same destination node, but always to specific destination port.  These packets are large enough to contain rich metadata about the flow, formatted as a json payload carried in syslog.  The firefly packets can be collected en route by participating networks, by the end host, or sent to a central collector.
             </t>
         </section> <!-- end of firefly -->
 
@@ -416,6 +416,14 @@
 	  <seriesInfo name="DOI" value="10.1016/j.future.2016.03.010"/>
 	</reference>
 
+        <reference anchor="Firefly" target="https://indico.jlab.org/event/459/contributions/11321/">
+          <front>
+              <title>Identifying and Understanding Scientific Network Flows</title>
+             <author/>
+         </front>
+         <refcontent>26th International Conference on Computing in High Energy &#38; Nuclear Physics (CHEP 2023)</refcontent>
+        </reference>
+
         <reference anchor="SciTags" target="https://www.scitags.org/">
           <front>
               <title>Scientific network tags (scitags) website and accompanying registry</title>
@@ -466,9 +474,10 @@
       <name>Acknowledgements</name>
       <t>
           Members of the Worldwide LHC Computing Grid (WLCG) Research Networking Technical Working Group:
+          Marian Babik (CERN), Shawn McKee (Michigan), Dale W. Carder (LBNL/ESnet), Fatema Bannat Wala (LBNL/ESNet), Eli Dart (LBNL/ESnet), Mariam Kiran (ESnet), Edoardo Martelli (CERN), Pavlo Svirin(CERN/UTA), Tim Chown (Jisc), Marcos Schwarz (RNP), Joe Breen (Univ of Utah), Alexandr Zaytsev (BNL), Jason Lomonaco (Internet2), Karl Newell (Internet2), Casey Russell (KanREN), Joe Mambretti (StarLight, iCAIR NU, MREN) , Eric Brown (Virginia Tech), Mario Lassnig (CERN), Michael Lambert (PSC), Garhan Attebury (UNL)
       </t>
       <t>
-          Marian Babik (CERN), Shawn McKee (Michigan), Dale W. Carder (LBNL/ESnet), Fatema Bannat Wala (LBNL/ESNet), Eli Dart (LBNL/ESnet), Mariam Kiran (ESnet), Edoardo Martelli (CERN), Pavlo Svirin(CERN/UTA), Tim Chown (Jisc), Marcos Schwarz (RNP), Joe Breen (Univ of Utah), Alexandr Zaytsev (BNL), Jason Lomonaco (Internet2), Karl Newell (Internet2), Casey Russell (KanREN), Joe Mambretti (StarLight, iCAIR NU, MREN) , Eric Brown (Virginia Tech), Mario Lassnig (CERN), Michael Lambert (PSC), Garhan Attebury (UNL)
+          The V6OPS working group and comments from Brian E. Carpenter.
       </t>
     </section>
     
