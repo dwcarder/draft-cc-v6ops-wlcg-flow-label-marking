@@ -1,4 +1,4 @@
-xmldrafts := $(wildcard *.xml)
+xmldrafts := $(filter-out $(wildcard *exp.xml), $(wildcard *.xml))
 txtfiles := $(xmldrafts:.xml=.txt)
 
 .PHONY: all
