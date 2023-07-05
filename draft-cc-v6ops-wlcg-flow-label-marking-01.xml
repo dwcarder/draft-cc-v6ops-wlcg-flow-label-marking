@@ -323,10 +323,10 @@
 
         </section> <!-- end of ipv4 -->
 
-        <section anchor="firefly">
+        <section anchor="firefly-flow-marking">
             <name>Firefly Packets for marking Network Flows</name>
             <t>
-                Separate packets are sent along side application traffic from the source to the same destination node, but always to specific destination port.  These packets are large enough to contain rich metadata about the flow, formatted as a json payload carried in syslog.  These telemetry packets can be collected en route by participating networks, by the end host, or sent to a central collector.
+                <xref target="Firefly"/> packets are and approach to mark flows by sending a sperate telemetry packets along side application traffic from the source to the same destination node, but always to specific destination port.  These packets are large enough to contain rich metadata about the flow, formatted as a json payload carried in syslog.  The firefly packets can be collected en route by participating networks, by the end host, or sent to a central collector.
             </t>
         </section> <!-- end of firefly -->
 
@@ -415,6 +415,14 @@
           <refcontent>Future Generation Computer Systems, Volume 72, Pages 105-117, ISSN 0167-739X</refcontent>
 	  <seriesInfo name="DOI" value="10.1016/j.future.2016.03.010"/>
 	</reference>
+
+        <reference anchor="Firefly" target="https://indico.jlab.org/event/459/contributions/11321/">
+          <front>
+              <title>Identifying and Understanding Scientific Network Flows</title>
+             <author/>
+         </front>
+         <refcontent>26th International Conference on Computing in High Energy &#38; Nuclear Physics (CHEP 2023)</refcontent>
+        </reference>
 
         <reference anchor="SciTags" target="https://www.scitags.org/">
           <front>
