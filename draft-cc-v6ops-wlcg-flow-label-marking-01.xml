@@ -326,7 +326,7 @@
         <section anchor="firefly-flow-marking">
             <name>Firefly Packets for marking Network Flows</name>
             <t>
-                <xref target="Firefly"/> packets are and approach to mark flows by sending a sperate telemetry packets along side application traffic from the source to the same destination node, but always to specific destination port.  These packets are large enough to contain rich metadata about the flow, formatted as a json payload carried in syslog.  The firefly packets can be collected en route by participating networks, by the end host, or sent to a central collector.
+                <xref target="Firefly"/> packets are an approach to mark flows by sending separate telemetry packets along side application traffic from the source to the same destination node, but always to specific destination port.  These packets are large enough to contain rich metadata about the flow, formatted as a json payload carried in syslog.  The firefly packets can be collected en route by participating networks, by the end host, or sent to a central collector.
             </t>
         </section> <!-- end of firefly -->
 
@@ -474,9 +474,10 @@
       <name>Acknowledgements</name>
       <t>
           Members of the Worldwide LHC Computing Grid (WLCG) Research Networking Technical Working Group:
+          Marian Babik (CERN), Shawn McKee (Michigan), Dale W. Carder (LBNL/ESnet), Fatema Bannat Wala (LBNL/ESNet), Eli Dart (LBNL/ESnet), Mariam Kiran (ESnet), Edoardo Martelli (CERN), Pavlo Svirin(CERN/UTA), Tim Chown (Jisc), Marcos Schwarz (RNP), Joe Breen (Univ of Utah), Alexandr Zaytsev (BNL), Jason Lomonaco (Internet2), Karl Newell (Internet2), Casey Russell (KanREN), Joe Mambretti (StarLight, iCAIR NU, MREN) , Eric Brown (Virginia Tech), Mario Lassnig (CERN), Michael Lambert (PSC), Garhan Attebury (UNL)
       </t>
       <t>
-          Marian Babik (CERN), Shawn McKee (Michigan), Dale W. Carder (LBNL/ESnet), Fatema Bannat Wala (LBNL/ESNet), Eli Dart (LBNL/ESnet), Mariam Kiran (ESnet), Edoardo Martelli (CERN), Pavlo Svirin(CERN/UTA), Tim Chown (Jisc), Marcos Schwarz (RNP), Joe Breen (Univ of Utah), Alexandr Zaytsev (BNL), Jason Lomonaco (Internet2), Karl Newell (Internet2), Casey Russell (KanREN), Joe Mambretti (StarLight, iCAIR NU, MREN) , Eric Brown (Virginia Tech), Mario Lassnig (CERN), Michael Lambert (PSC), Garhan Attebury (UNL)
+          The V6OPS working group and comments from Brian E. Carpenter.
       </t>
     </section>
     
