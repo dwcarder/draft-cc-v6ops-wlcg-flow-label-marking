@@ -299,29 +299,9 @@
                 A recently published IETF personal draft documents the concept of "Network Tokens", see <xref target="I-D.yiakoumis-network-tokens"/>.
             </t>
             <t>
-                "A network token is a small piece of data that end users attach to their packets.  As packets flow through the network, intermediate nodes MAY detect tokens, interpret them, and apply the desired service to the packets that carry them (and possibly to all other packets from the same flow).  For example, a token might just state the name of the application that a packet originates from."  The draft proposes a 28-bit token ID field.  It discusses multiple mechanisms for tokens to be conveyed; some may be applicable to IPv4.  <xref target="I-D.iab-path-signals-collaboration"/> puts this work into a broader context.
+                "A network token is a small piece of data that end users attach to their packets.  As packets flow through the network, intermediate nodes MAY detect tokens, interpret them, and apply the desired service to the packets that carry them (and possibly to all other packets from the same flow).  For example, a token might just state the name of the application that a packet originates from."  The draft proposes a 28-bit token ID field and discusses multiple mechanisms for tokens to be conveyed.  <xref target="I-D.iab-path-signals-collaboration"/> puts this work into a broader context.
             </t>
         </section> <!-- end of tokens -->
-
-        <section anchor="ipv4">
-            <name>IPv4 considerations</name>
-            <t>
-                While this document is targeted at the IPv6 Operations WG and describes an approach used to mark IPv6 traffic, the reality is that some HEP and WLCG traffic is IPv4, and thus there is interest, in the short term at least, in marking IPv4 traffic.
-            </t>
-            <t>
-                IPv4 does not have a dedicated flow label, but provides a way to extend headers by means of header options. An overview of the IPv4 RFCs related to the header options can be found at: <xref target="IPv4-parameters"/>.  The IPv4 option method is likely to effectively be unusable because unknown options lead to packet drops on many paths (due to firewalls, etc).  There is an IETF draft that attempts to add IPv6 flow labels to IPv4 via options at <xref target="I-D.herbert-ipv4-eh"/>, however there appears to be no existing implementation readily available.
-            </t>
-            <t>
-                IPv4 header options can be set via setsockopt as well, however the actual application support for different standards is more complex. As an example, while there are many existing IPv4 header options, only some of them are implemented in the Linux kernel. The Stream Identifier Option, value would appear to align with our use of the ipv6 flow label, but its usage was obsoleted in <xref target="RFC1122" sectionFormat="of" section="3.2.1.8"/>.  
-            </t>
-            <t>
-                <xref target="I-D.ietf-cipso-ipsecurity"/> (Commercial IP Security Option) has an implementation in the kernel, allowing for an operator to be able to run an audit on packets and discard anything that is not labeled correctly.  However, labeling does require additional configuration of the node to indicate which label the node is part of and that seems rather complex to setup and appears to be designed to support system-level tagging and not application-level tagging.
-            </t>
-            <t>
-                As usage of IPv4 has been superseded by IPv6, it was determined that further effort for IPv4 was unwarranted.
-            </t>
-
-        </section> <!-- end of ipv4 -->
 
         <section anchor="firefly-flow-marking">
             <name>Firefly Packets for marking Network Flows</name>
@@ -375,7 +355,6 @@
       <references>
         <name>Informative References</name>
 
-        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.1122.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3176.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3697.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5102.xml"/>
@@ -389,19 +368,10 @@
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9268.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9343.xml"/>
 
-        <reference anchor="IPv4-parameters" target="https://www.iana.org/assignments/ip-parameters/ip-parameters.xhtml">
-          <front>
-              <title>Internet Protocol Version 4 (IPv4) Parameters</title>
-             <author/>
-         </front>
-        </reference>
-
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-ippm-ioam-ipv6-options.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.yiakoumis-network-tokens.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.iab-path-signals-collaboration.xml"/>
-        <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.herbert-ipv4-eh.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.krishnan-ipv6-hopbyhop.xml"/>
-        <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-cipso-ipsecurity.xml"/>
 
 	<reference anchor="Lark" target="https://doi.org/10.1016/j.future.2016.03.010">
 	  <front>
@@ -477,7 +447,7 @@
           Marian Babik (CERN), Shawn McKee (Michigan), Dale W. Carder (LBNL/ESnet), Fatema Bannat Wala (LBNL/ESNet), Eli Dart (LBNL/ESnet), Mariam Kiran (ESnet), Edoardo Martelli (CERN), Pavlo Svirin(CERN/UTA), Tim Chown (Jisc), Marcos Schwarz (RNP), Joe Breen (Univ of Utah), Alexandr Zaytsev (BNL), Jason Lomonaco (Internet2), Karl Newell (Internet2), Casey Russell (KanREN), Joe Mambretti (StarLight, iCAIR NU, MREN) , Eric Brown (Virginia Tech), Mario Lassnig (CERN), Michael Lambert (PSC), Garhan Attebury (UNL)
       </t>
       <t>
-          The V6OPS working group and comments from Brian E. Carpenter.
+          The V6OPS working group and comments from Brian E. Carpenter and Tom Herbert.
       </t>
     </section>
     
