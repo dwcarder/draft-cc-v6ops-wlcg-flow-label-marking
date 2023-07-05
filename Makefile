@@ -1,13 +1,14 @@
-NAME=draft-cc-v6ops-wlcg-flow-label-marking
+xmldrafts := $(wildcard *.xml)
+txtfiles := $(xmldrafts:.xml=.txt)
 
 .PHONY: all
 all: drafts
 
 .PHONY: drafts
-drafts: $(NAME).txt
+drafts: $(txtfiles)
 
-$(NAME).txt: $(NAME).xml
-	xml2rfc $(NAME).xml --html --text --expand
+%.txt: %.xml
+	xml2rfc $< --html --text --expand
 
 clean:
 	rm -f *.html *.txt *.exp.xml
