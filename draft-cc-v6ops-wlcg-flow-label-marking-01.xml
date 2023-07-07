@@ -457,10 +457,31 @@
       <name>Acknowledgements</name>
       <t>
           Members of the Worldwide LHC Computing Grid (WLCG) Research Networking Technical Working Group:
-          Marian Babik (CERN), Shawn McKee (Michigan), Dale W. Carder (LBNL/ESnet), Fatema Bannat Wala (LBNL/ESNet), Eli Dart (LBNL/ESnet), Mariam Kiran (ESnet), Edoardo Martelli (CERN), Pavlo Svirin(CERN/UTA), Tim Chown (Jisc), Marcos Schwarz (RNP), Joe Breen (Univ of Utah), Alexandr Zaytsev (BNL), Jason Lomonaco (Internet2), Karl Newell (Internet2), Casey Russell (KanREN), Joe Mambretti (StarLight, iCAIR NU, MREN) , Eric Brown (Virginia Tech), Mario Lassnig (CERN), Michael Lambert (PSC), Garhan Attebury (UNL)
+          <contact fullname="Garhan Attebury"/> (UNL)
+          <contact fullname="Marian Babik"/> (CERN),
+          <contact fullname="Joe Breen"/> (Univ of Utah),
+          <contact fullname="Eric Brown"/> (Virginia Tech),
+          <contact fullname="Dale W. Carder"/> (LBNL/ESnet),
+          <contact fullname="Tim Chown"/> (Jisc),
+          <contact fullname="Eli Dart"/> (LBNL/ESnet),
+          <contact fullname="Mariam Kiran"/> (ESnet),
+          <contact fullname="Michael Lambert"/> (PSC),
+          <contact fullname="Mario Lassnig"/> (CERN),
+          <contact fullname="Jason Lomonaco"/> (Internet2),
+          <contact fullname="Joe Mambretti"/> (StarLight, iCAIR NU, MREN),
+          <contact fullname="Edoardo Martelli"/> (CERN),
+          <contact fullname="Shawn McKee"/> (Michigan),
+          <contact fullname="Karl Newell"/> (Internet2),
+          <contact fullname="Casey Russell"/> (KanREN),
+          <contact fullname="Marcos Schwarz"/> (RNP),
+          <contact fullname="Pavlo Svirin"/> (CERN/UTA),
+          <contact fullname="Fatema Bannat Wala"/> (LBNL/ESNet),
+          <contact fullname="Alexandr Zaytsev"/> (BNL)
       </t>
       <t>
-          The V6OPS working group and comments from Brian E. Carpenter and Tom Herbert.
+          The V6OPS working group and comments from
+          <contact fullname="Brian E. Carpenter"/> and
+          <contact fullname="Tom Herbert"/>.
       </t>
     </section>
     
