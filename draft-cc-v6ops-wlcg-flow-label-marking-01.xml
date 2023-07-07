@@ -310,7 +310,7 @@
                 A recently published IETF personal draft documents the concept of "Network Tokens", see <xref target="I-D.yiakoumis-network-tokens"/>.
             </t>
             <t>
-                "A network token is a small piece of data that end users attach to their packets.  As packets flow through the network, intermediate nodes MAY detect tokens, interpret them, and apply the desired service to the packets that carry them (and possibly to all other packets from the same flow).  For example, a token might just state the name of the application that a packet originates from."  The draft proposes a 28-bit token ID field and discusses multiple mechanisms for tokens to be conveyed.  <xref target="I-D.iab-path-signals-collaboration"/> puts this work into a broader context.
+                "A network token is a small piece of data that end users attach to their packets.  As packets flow through the network, intermediate nodes MAY detect tokens, interpret them, and apply the desired service to the packets that carry them (and possibly to all other packets from the same flow).  For example, a token might just state the name of the application that a packet originates from."  The draft proposes a 28-bit token ID field and discusses multiple mechanisms for tokens to be conveyed.  <xref target="RFC9419"/> puts this work into a broader context.
             </t>
         </section> <!-- end of tokens -->
 
@@ -380,10 +380,10 @@
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9098.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9268.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9343.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9419.xml"/>
 
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-ippm-ioam-ipv6-options.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.yiakoumis-network-tokens.xml"/>
-        <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.iab-path-signals-collaboration.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.krishnan-ipv6-hopbyhop.xml"/>
 
 	<reference anchor="Lark" target="https://doi.org/10.1016/j.future.2016.03.010">
