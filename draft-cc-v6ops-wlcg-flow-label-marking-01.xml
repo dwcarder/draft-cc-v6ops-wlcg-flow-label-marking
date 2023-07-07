@@ -209,10 +209,15 @@
                 <xref target="RFC6437" sectionFormat="of" section="1"/> further adds that "a specific goal is to enable and encourage the use of the flow label for various forms of stateless load distribution, especially across Equal Cost Multi-Path (ECMP) and/or Link Aggregation Group (LAG) paths."
             </t>
             <t>
-                  In this packet marking scheme, all traffic belonging to the same experiment and application, e.g., "ALICE" and "XRootD", will carry a flow label with 15 fixed, common bits and 5 varying (entropy) bits.  Given use of the Flow label as described above should use 20 entropy bits (with a uniform distribution), it is not the case here that the flow label values will be unique with such a high probability, i.e., 1 in 32 network flows will in principle be unique rather than around 1 in a million.
+                In this packet marking scheme, all traffic belonging to the same experiment and application, e.g., "ALICE" and "XRootD", will carry a flow label with 15 fixed, common bits and 5 varying (entropy) bits.  Given use of the Flow label as described above should use 20 entropy bits (with a uniform distribution), it is not the case here that the flow label values will be unique with such a high probability, i.e., 1 in 32 network flows will in principle be unique rather than around 1 in a million.  
           </t>
             <t>
-              The 5 entropy bits are used to still support a level of conformance with the requirement stated in RFC 6437 to support traffic distribution in ECMP and LAG scenarios. The number of bits chosen is a tradeoff between the number of bits available for the experiment and application labeling and the number of entropy bits.
+                The 5 entropy bits are used to still support a level of conformance with the requirement stated in RFC 6437 to support traffic distribution in ECMP and LAG scenarios.  The number of bits chosen is a tradeoff between the number of bits available for the experiment and application labeling and the number of entropy bits.  
+                <xref target="RFC6437" sectionFormat="of" section="1.2"/> specifically quotes <xref target="RFC3697" sectionFormat="of" section="2"/> and is worth restating here. "Router performance SHOULD NOT be dependent on the distribution of the Flow Label values.  Especially, the Flow Label bits alone make poor material for a hash key."
+                <xref target="RFC6438" sectionFormat="of" section="3"/> clarifies that intermediate routers using ECMP or LAG "MUST minimally include the 3-tuple {dest addr, source addr, flow label}" and recommends additional sources of entropy to be considered.  Additional clarifications are also made for tunneled traffic.  In neither case is the flow label exclusively used.
+            </t>
+            <t>
+                <xref target="RFC7098"/> describes use of the flow label in server load balancing environments.  Minimally a 2-tuple {source address, flow label} could be used as hash input for a basic implementation.   If this is not adequate in practice, it very well might be that a load balancer must process the packet deeper to examine a larger n-tuple and/or watch state to more aggressively tear down stale sessions.  While use of server load balancers are currently rare in our specific operating environment and there is typically a large number of source hosts with many small flows, any potential future use of load balancers should still carefully examine the adequacy of the implementation for the given mix of traffic.
             </t>
         </section> <!-- end of deviations -->
 
@@ -359,7 +364,9 @@
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3697.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5102.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6436.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6438.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7011.xml"/>
+        <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7098.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7258.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7837.xml"/>
         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7872.xml"/>
