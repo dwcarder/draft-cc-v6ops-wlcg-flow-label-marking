@@ -11,7 +11,7 @@
 <rfc
   xmlns:xi="http://www.w3.org/2001/XInclude"
   category="info"
-  docName="draft-cc-v6ops-wlcg-flow-label-marking-02"
+  docName="draft-cc-v6ops-wlcg-flow-label-marking-03"
   ipr="trust200902"
   obsoletes=""
   updates=""
@@ -23,7 +23,7 @@
     <title abbrev="IPv6 Packet Marking">Use of the IPv6 Flow Label for WLCG Packet Marking</title>
     <!-- The abbreviated title is required if the full title is longer than 39 characters -->
 
-    <seriesInfo name="Internet-Draft" value="draft-cc-v6ops-wlcg-flow-label-marking-02"/>
+    <seriesInfo name="Internet-Draft" value="draft-cc-v6ops-wlcg-flow-label-marking-03"/>
    
     <author fullname="Dale W. Carder" initials="D." surname="Carder">
       <organization>Energy Sciences Network</organization>
@@ -79,7 +79,7 @@
       </address>
     </author>
 
-    <date year="2023"/>
+    <date year="2024"/>
     <!-- On draft subbmission:
          * If only the current year is specified, the current day and month will be used.
          * If the month and year are both specified and are the current ones, the current day will
@@ -241,9 +241,6 @@
                 <xref target="RFC6437" sectionFormat="of" section="1.2"/> specifically quotes <xref target="RFC3697" sectionFormat="of" section="2"/> and is worth restating here. "Router performance SHOULD NOT be dependent on the distribution of the Flow Label values.  Especially, the Flow Label bits alone make poor material for a hash key."
                 <xref target="RFC6438" sectionFormat="of" section="3"/> clarifies that intermediate routers using ECMP or LAG "MUST minimally include the 3-tuple {dest addr, source addr, flow label}" and recommends additional sources of entropy to be considered.  Additional clarifications are also made for tunneled traffic.  In neither case is the flow label exclusively used.
             </t>
-            <t>
-                <xref target="RFC7098"/> describes use of the flow label in server load balancing environments.  Minimally a 2-tuple {source address, flow label} could be used as hash input for a basic implementation.   If this is not adequate in practice, it very well might be that a load balancer must process the packet deeper to examine a larger n-tuple and/or watch state to more aggressively tear down stale sessions.  While use of server load balancers are currently rare in our specific operating environment and there is typically a large number of source hosts with many small flows, any potential future use of load balancers should still carefully examine the adequacy of the implementation for the given mix of traffic.
-            </t>
         </section> <!-- end of deviations -->
 
         <section anchor="collection">
@@ -283,7 +280,7 @@
         <section anchor="options">
             <name>IPv6 Hop-by-Hop or Destination Options</name>
             <t>
-                Extension headers are known to be problematic in that they have a history of being filtered or dropped in transit, as measured in <xref target="RFC7872"/> with substantial further discussion in <xref target="RFC9098"/>. It might be that such issues are less common in Research and Education networks.  As an example, <xref target="RFC9343"/> defines an alternate marking encoding for use in either hop-by-hop or destination options headers.  <xref target="RFC7837"/> defines a marking in support of congestion control (ConEx), and <xref target="RFC8250"/> is a Standards Track document that defines a destination option for Performance and Diagnostic Metrics (PDM) for IPv6.   There is also this draft defining an option <xref target="I-D.ietf-ippm-ioam-ipv6-options"/>, for the use case of carrying OAM information.
+                Extension headers are known to be problematic in that they have a history of being filtered or dropped in transit, as measured in <xref target="RFC7872"/> with substantial further discussion in <xref target="RFC9098"/>. In our testing, these issues are no less common in Research and Education networks.  As an example, <xref target="RFC9343"/> defines an alternate marking encoding for use in either hop-by-hop or destination options headers.  <xref target="RFC7837"/> defines a marking in support of congestion control (ConEx), and <xref target="RFC8250"/> is a Standards Track document that defines a destination option for Performance and Diagnostic Metrics (PDM) for IPv6.   There is also this draft defining an option <xref target="I-D.ietf-ippm-ioam-ipv6-options"/>, for the use case of carrying OAM information.
             </t>
             <t>
                 The Destination option header could therefore be a logical choice to place activity-specific telemetry identifiers, as there is less of a constraint on space than the IPv6 Flow Label, less history of defined pre-existing intentions from the standards body, and low deployed usage on the Internet.   However, at present, the linux implementation in particular requires either setuid 0 or CAP_NET_RAW capability to be able to call setsockopt(s, IPPROTO_IPV6, IPV6_DSTOPTS, ext_hdr_p, ext_hdr_size), making it unusable by typical userspace activities.  There has been a set of patches made that could address this as well as extend the functionality, though they have not been met with support from the linux network maintainers.  Additionally, extracting that field by intermediate routers and exporting it via IPFIX may be further subject to lack of support compared to the fixed field and known position of the flow label.
@@ -334,6 +331,19 @@
         </section> <!-- end of firefly -->
 
     </section> <!-- end of alternatives -->
+
+
+    <section anchor="clashing">
+        <name>Potential Clashing Uses</name>
+            <t>
+                <xref target="RFC7098"/> describes use of the flow label in server load balancing environments.  Minimally a 2-tuple {source address, flow label} could be used as hash input for a basic implementation.   If this is not adequate in practice, it very well might be that a load balancer must process the packet deeper to examine a larger n-tuple and/or watch state to more aggressively tear down stale sessions.  While use of server load balancers are currently rare in our specific operating environment and there is typically a large number of source hosts with many small flows, any potential future use of load balancers should still carefully examine the adequacy of the implementation for the given mix of traffic.
+            </t>
+            <t>
+                <xref target="PLB"/> (Protective Load Balancing) is a mechanism where hosts experiencing congestion on a flow change the IPv6 Flow Label.  Devices in the network path between the hosts use the flow label as part of the entropy in hashing traffic for load balancing across multiple links such as with ECMP or LACP.  When the flow label is changed, the flow is rehashed by the devices onto a new set of links, presumably avoiding the congestion hotspot.  This capability, targeted at datacenter or limited-domain use along with explicit congestion signaling, is a feature available in the Linux kernel configurable via a sysctl and disabled by default.  Hosts with applications implementing flow label marking should avoid use of PLB, though it could be theoretically feasible to manipulate the reserved entropy bits for a comparable outcome.
+            </t>
+
+    </section> <!-- end of clashing -->
+
 
     <section anchor="implementations">
         <name>Implementation Status</name>
@@ -460,6 +470,25 @@
              <author/>
          </front>
         </reference>
+
+	<reference anchor="PLB" target="https://doi.org/10.1145/3544216.3544226">
+	  <front>
+	    <title>PLB: congestion signals are simple and effective for network load balancing</title>
+            <author initials="M. A." surname="Qureshi" fullname="Mubashir Adnan Quresh"/>
+            <author initials="Y." surname="Cheng" fullname="Yuchung Cheng"/>
+            <author initials="Q." surname="Yin" fullname="Qianwen Yin"/>
+            <author initials="Q." surname="Fu" fullname="Qianwen Fu"/>
+            <author initials="G." surname="Kumar" fullname="Gautam Kumar"/>
+            <author initials="M." surname="Moshref" fullname="Moshref"/>
+            <author initials="J." surname="Yan" fullname="Junhua Yan"/>
+            <author initials="V." surname="Jacobson" fullname="Van Jacobson"/>
+            <author initials="D." surname="Wetherall" fullname="David Wetherall"/>
+            <author initials="A." surname="Kabbani" fullname="Abdul Kabbani"/>
+	    <date year="2022"/>
+	  </front>
+          <refcontent>Proceedings of the ACM SIGCOMM 2022 Conference, pages 207–218</refcontent>
+	  <seriesInfo name="DOI" value="10.1145/3544216.3544226"/>
+	</reference>
 
         
       </references>
